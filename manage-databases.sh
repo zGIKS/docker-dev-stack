@@ -11,13 +11,14 @@ NC='\033[0m' # No Color
 
 # Función para mostrar el uso
 show_usage() {
-    echo -e "${BLUE}Uso:${NC} $0 {mysql|kafka|cassandra|postgresql|all} {start|stop|status|restart}"
+    echo -e "${BLUE}Uso:${NC} $0 {mysql|kafka|cassandra|postgresql|mongo|all} {start|stop|status|restart}"
     echo ""
     echo -e "${BLUE}Servicios disponibles:${NC}"
     echo "  mysql       - MySQL 8.0 (Puerto 3306)"
     echo "  kafka       - Kafka + Kafka UI (Puertos 9092, 29092, 9090)"
     echo "  cassandra   - Cassandra 4.1 (Puerto 9042)"
     echo "  postgresql  - PostgreSQL 15 (Puerto 5432)"
+    echo "  mongo       - MongoDB latest (Puerto 27017)"
     echo "  all         - Todos los servicios"
     echo ""
     echo -e "${BLUE}Comandos:${NC}"
@@ -113,7 +114,7 @@ COMMAND=$2
 
 # Validar servicio
 case $SERVICE in
-    mysql|kafka|cassandra|postgresql)
+    mysql|kafka|cassandra|postgresql|mongo)
         ;;
     all)
         ;;
@@ -140,7 +141,7 @@ esac
 # Ejecutar comando
 if [ "$SERVICE" == "all" ]; then
     # Ejecutar comando para todos los servicios
-    for svc in mysql kafka cassandra postgresql; do
+    for svc in mysql kafka cassandra postgresql mongo; do
         echo ""
         case $COMMAND in
             start)
