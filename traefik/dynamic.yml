@@ -1,0 +1,37 @@
+# Traefik Dynamic Configuration
+http:
+  middlewares:
+    # CORS Middleware
+    cors:
+      headers:
+        accessControlAllowMethods:
+          - GET
+          - POST
+          - PUT
+          - PATCH
+          - DELETE
+          - OPTIONS
+        accessControlAllowHeaders:
+          - "*"
+        accessControlAllowOriginList:
+          - "*"
+        accessControlMaxAge: 100
+        addVaryHeader: true
+
+    # Security Headers
+    security-headers:
+      headers:
+        browserXssFilter: true
+        contentTypeNosniff: true
+        frameDeny: true
+        sslRedirect: false
+        stsIncludeSubdomains: true
+        stsPreload: true
+        stsSeconds: 31536000
+        customFrameOptionsValue: "SAMEORIGIN"
+
+    # Rate Limiting
+    rate-limit:
+      rateLimit:
+        average: 100
+        burst: 50
