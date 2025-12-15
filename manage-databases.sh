@@ -20,6 +20,7 @@ show_usage() {
     echo "  postgresql  - PostgreSQL 15 (Puerto 5432)"
     echo "  mongo       - MongoDB latest (Puerto 27017)"
     echo "  clickhouse  - ClickHouse latest (Puertos 8123, 9000, 9009)"
+    echo "  redis       - Redis latest (Puerto 6379)"
     echo "  traefik     - Traefik Proxy + Dashboard (Puertos 80, 8180)"
     echo "  all         - Todos los servicios"
     echo ""
@@ -53,6 +54,15 @@ start_service() {
             echo ""
             echo -e "${YELLOW}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
             echo -e "${GREEN}Kafka UI disponible en:${NC} ${BLUE}http://localhost:9090${NC}"
+            echo -e "${YELLOW}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+            echo ""
+        fi
+
+        # Mostrar información adicional para Redis
+        if [ "$service" == "redis" ]; then
+            echo ""
+            echo -e "${YELLOW}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+            echo -e "${GREEN}Redis disponible en:${NC} ${BLUE}localhost:6379${NC}"
             echo -e "${YELLOW}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
             echo ""
         fi
@@ -105,6 +115,15 @@ status_service() {
         fi
     fi
 
+    # Información adicional para Redis
+    if [ "$service" == "redis" ]; then
+        local redis_running=$(sudo docker-compose -f "$compose_file" ps | grep redis | grep "Up")
+        if [ ! -z "$redis_running" ]; then
+            echo ""
+            echo -e "${GREEN}Redis disponible en:${NC} ${BLUE}localhost:6379${NC}"
+        fi
+    fi
+
     # Información adicional para Traefik
     if [ "$service" == "traefik" ]; then
         local traefik_running=$(sudo docker-compose -f "$compose_file" ps | grep traefik | grep "Up")
@@ -136,7 +155,7 @@ COMMAND=$2
 
 # Validar servicio
 case $SERVICE in
-    mysql|kafka|cassandra|postgresql|mongo|clickhouse|traefik)
+    mysql|kafka|cassandra|postgresql|mongo|clickhouse|redis|traefik)
         ;;
     all)
         ;;
@@ -163,7 +182,7 @@ esac
 # Ejecutar comando
 if [ "$SERVICE" == "all" ]; then
     # Ejecutar comando para todos los servicios
-    for svc in mysql kafka cassandra postgresql mongo clickhouse traefik; do
+    for svc in mysql kafka cassandra postgresql mongo clickhouse redis traefik; do
         echo ""
         case $COMMAND in
             start)
